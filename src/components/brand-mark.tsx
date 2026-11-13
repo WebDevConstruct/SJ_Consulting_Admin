@@ -1,0 +1,1 @@
+export function BrandMark(){return <div className="flex items-center gap-3"><div className="bg-gold-metal grid h-10 w-10 place-items-center rounded-xl text-sm font-bold text-[#0A0A0B]">SJ</div><div><p className="font-display text-lg leading-none">SJ Consulting</p><p className="mt-1 text-[10px] uppercase tracking-[.22em] text-black/50">Limited · Admin</p></div></div>}

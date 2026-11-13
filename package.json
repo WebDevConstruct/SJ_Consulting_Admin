@@ -1,0 +1,46 @@
+{
+  "name": "sj-consulting-admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "@prisma/config": "^7.10.0",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.2",
+    "@tailwindcss/postcss": "^4.3.3",
+    "dotenv": "^18.0.5",
+    "lucide-react": "latest",
+    "next": "latest",
+    "next-themes": "latest",
+    "pg": "^8.23.1",
+    "postcss": "^8.5.29",
+    "react": "latest",
+    "react-dom": "latest",
+    "server-only": "^0.0.1",
+    "tailwindcss": "^4.3.3",
+    "unpdf": "^1.8.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/pg": "^8.23.1",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "prisma": "^7.10.0",
+    "tsx": "^4.23.15",
+    "typescript": "latest"
+  },
+  "description": "Initial unauthenticated admin interface for SJ Consulting Limited, built with Next.js App Router, TypeScript, and the supplied ink/paper/metallic-gold design tokens.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
