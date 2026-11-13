@@ -6,15 +6,15 @@ export default function SetupPage(){
   const {emailSignIn, setEmailSignIn} = useAppContext()
     const RequestOtpViaVerifiedEmail = async(e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        await fetch("/api/admin/auth/request-otp",
-             {
-                method : "POST",
-                headers : {
-                    "Content-Type" : "application/json"
-                },
-                body : JSON.stringify({email: emailSignIn})
-             }
-        )
+        // await fetch("/api/admin/auth/request-otp",
+        //      {
+        //         method : "POST",
+        //         headers : {
+        //             "Content-Type" : "application/json"
+        //         },
+        //         body : JSON.stringify({email: emailSignIn})
+        //     }
+      //  )
 
     }
     return(
@@ -37,7 +37,7 @@ export default function SetupPage(){
                 RequestOtpViaVerifiedEmail(e);
              }}
              className="bg-gold-metal w-full rounded-xl px-4 py-3 font-semibold">
-                Send verification code</button><a href="/admin/login" 
+                Send verification code</button><a href="/login" 
                 className="block text-center text-sm font-semibold
                  text-[#8B6F14]">
                     Back to sign in
