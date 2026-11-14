@@ -92,7 +92,7 @@ export function AdminNav() {
   return (
     <>
       {/* Mobile top bar */}
-      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-paper-line bg-paper/95 px-4 py-3 backdrop-blur md:hidden dark:border-ink-line dark:bg-ink-surface/95">
+      <header className="fixed inset-x-0 top-0 z-50 mb-20 flex items-center justify-between border-b border-paper-line bg-paper/95 px-4 py-3 backdrop-blur md:hidden dark:border-ink-line dark:bg-ink-surface/95">
         <BrandMark />
 
         <button
@@ -107,7 +107,7 @@ export function AdminNav() {
 
       {/* Mobile sidebar overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0  z-50 md:hidden">
           <button
             type="button"
             aria-label="Close navigation"
@@ -115,7 +115,7 @@ export function AdminNav() {
             className="absolute inset-0 bg-ink/60"
           />
 
-          <nav className="absolute inset-y-0 left-0 flex w-full flex-col border-r border-paper-line bg-paper dark:border-ink-line dark:bg-ink-surface">
+          <nav className="absolute inset-y-0 left-0  flex w-full flex-col border-r border-paper-line bg-paper dark:border-ink-line dark:bg-ink-surface">
             <div className="flex items-center justify-between border-b border-paper-line px-5 py-4 dark:border-ink-line">
               <BrandMark />
 

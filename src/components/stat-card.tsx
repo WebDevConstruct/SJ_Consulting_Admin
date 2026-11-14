@@ -1,5 +1,5 @@
 export function StatCard({label,value,detail,accent=false}:
-    {label:string;value:string;detail:string;accent?:boolean}){
+    {label:string;value:string | number;detail:string;accent?:boolean}){
     return (
     <article className={`rounded-3xl border p-5 ${accent?"border-gold-300 bg-ink text-paper":"border-paper-line bg-paper dark:border-ink-line dark:bg-ink-surface"}`}
     ><p className={`text-xs uppercase tracking-[.16em] ${accent?"text-gold-200":"text-black/45 dark:text-white/45"}`}>

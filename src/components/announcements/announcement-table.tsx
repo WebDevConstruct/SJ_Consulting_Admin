@@ -188,7 +188,7 @@ export function AnnouncementTable() {
                     </td>
 
                     <td className="px-3 py-4 text-black/50 dark:text-white/50">
-                      {formatDate(announcement.created_at)}
+                      {formatDate(announcement?.created_at || "")}
                     </td>
 
                     <td className="px-3 py-4">

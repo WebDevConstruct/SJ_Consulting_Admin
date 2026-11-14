@@ -8,4 +8,4 @@ export interface AnnouncementInput {
      location?:string; event_date?:string;
       is_published:boolean;  slug : string; source_name : string
     }
-export interface AnnouncementRecord extends AnnouncementInput { id:string; created_at : string; updated_at?:string; }
+export interface AnnouncementRecord extends AnnouncementInput { id ?:string; created_at ?: string; updated_at?:string; }

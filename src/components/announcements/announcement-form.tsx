@@ -89,14 +89,15 @@ const router = useRouter()
   }, [initialData]);
 
 
-  const CodeHandler = async (data: AnnouncementRecord, e : FormEvent<HTMLFormElement>) => {
+  const CodeHandler = async (data: AnnouncementInput, e : FormEvent<HTMLFormElement>) => {
       const slug = createSlug(values?.title);
     set("slug", slug);
     const imageUrlFromUpload =
       (window as any).__ANNOUNCEMENT_IMAGE_URL ?? data.image_url;
 
     delete (window as any).__ANNOUNCEMENT_IMAGE_URL;
-console.log(values);
+console.log(values?.slug);
+alert(values?.slug);
     return handleSubmit({
       ...data,
       image_url: imageUrlFromUpload  ,
@@ -231,13 +232,19 @@ console.log(values);
                                                                                 Publish immediately
                                                                                 </span><span className="mt-1 block text-xs text-black/45
                                                                                  dark:text-white/45">Leave off to save this announcement as a draft.
-                                                                                 </span></span></label>{error&&<p role="alert" className="rounded-xl
+                                                                                 </span></span></label>
+                                                                                 {error&&
+                                                                                 <p role="alert" className="rounded-xl
                                                                                   bg-red-50 p-3 text-sm text-red-700">
                                                                                     {error}
-                                                                                  </p>}<div className="flex flex-col-reverse gap-3 sm:flex-row 
-                                                                                  sm:justify-end"><button type="button" onClick={()=> router.back()}
+                                                                                  </p>}
+                                                                                  <div className="flex flex-col-reverse gap-3 sm:flex-row 
+                                                                                  sm:justify-end">
+                                                                                    <button type="button" onClick={()=> router.back()}
                                                                                    className="rounded-xl border border-paper-line px-5 py-3 text-sm
-                                                                                    dark:border-ink-line">Cancel</button>
+                                                                                    dark:border-ink-line">
+                                                                                      Cancel
+                                                                                      </button>
                                                                                     <button disabled={isSubmitting} 
                                                                                     className="rounded-xl bg-gold-metal 
                                                                                     px-5 py-3 text-sm font-semibold text-ink disabled:opacity-60">

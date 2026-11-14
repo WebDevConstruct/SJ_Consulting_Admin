@@ -1,7 +1,6 @@
 import { z } from "zod";
 export const announcementSchema = z.object({
-  id : z.string().uuid(),
-  created_at : z.string(),
+
   category: z.enum(["mentorship", "unilag", "jamb", "accommodation"]),
   title: z.string().trim().min(3, "Title must be at least 3 characters.").max(180),
   subtext: z.string().trim().min(3, "Subtext is required.").max(300),
