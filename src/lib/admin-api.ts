@@ -85,12 +85,12 @@ export interface AnnouncementRecord extends AnnouncementInput {
  * Maps to: POST /functions/v1/admin-content { resource: "announcement", ...fields }
  */
 export async function createAnnouncement(
-  input: AnnouncementRecord,
-): Promise<AnnouncementRecord> {
+  input: AnnouncementInput,
+): Promise<AnnouncementInput> {
   return callAdminContent("POST", {
     resource: "announcement",
     ...input,
-  }) as Promise<AnnouncementRecord>;
+  }) as Promise<AnnouncementInput>;
 }
 
 /**
