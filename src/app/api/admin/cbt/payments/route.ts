@@ -165,7 +165,7 @@ export async function PATCH(request: NextRequest) {
         { status: 401 },
       );
     }
-
+//console.log("USERID", user.id)
     const { data: admin, error: adminError } = await supabase
       .from("admin_access")
       .select("id, role, is_active")
@@ -192,6 +192,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+
     const {
       payment_request_id,
       action,
@@ -199,142 +200,172 @@ export async function PATCH(request: NextRequest) {
       admin_note,
     } = parsed.data;
 
-    const { data: paymentRequest, error: requestError } =
-      await supabase
-        .from("course_payment_requests")
-        .select(
-          `
-          id,
-          user_id,
-          course_id,
-          status,
-          amount,
-          currency
-        `,
-        )
-        .eq("id", payment_request_id)
-        .maybeSingle();
+    console.log("action", action);
 
-    if (requestError) throw requestError;
+const { error } = await supabase.rpc(
+  "admin_approve_course_payment",
+  {
+    p_request_id: payment_request_id,
+    p_admin_user_id: user.id,
+    p_admin_note: admin_note ?? null,
+  }
+);
 
-    if (!paymentRequest) {
-      return NextResponse.json(
-        { error: "Payment request not found." },
-        { status: 404 },
-      );
-    }
+if (error) {
+  return NextResponse.json(
+    { error: error.message },
+    { status: 500 }
+  );
+}
 
-    if (
-      !["payment_claimed", "receipt_sent"].includes(
-        paymentRequest.status,
-      )
-    ) {
-      return NextResponse.json(
-        {
-          error:
-            "Only payment_claimed or receipt_sent requests can be approved or rejected.",
-        },
-        { status: 409 },
-      );
-    }
+const { data: approvedRequest, error: readError } = await supabase
+  .from("course_payment_requests")
+  .select("*")
+  .eq("id", payment_request_id)
+  .maybeSingle();
 
-    if (action === "reject") {
-      const { data: rejectedRequest, error: rejectError } =
-        await supabase
-          .from("course_payment_requests")
-          .update({
-            status: "rejected",
-            rejected_at: new Date().toISOString(),
-            admin_note: admin_note ?? null,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", payment_request_id)
-          .in("status", ["payment_claimed", "receipt_sent"])
-          .select("*")
-          .maybeSingle();
+if (readError) {
+  return NextResponse.json(
+    { error: readError.message },
+    { status: 500 }
+  );
+}
 
-      if (rejectError) throw rejectError;
+return NextResponse.json({
+  success: true,
+  payment_request: approvedRequest,
+});
+//     const { data: paymentRequest, error: requestError } =
+//       await supabase
+//         .from("course_payment_requests")
+//         .select(
+//           `
+//           id,
+//           user_id,
+//           course_id,
+//           status,
+//           amount,
+//           currency
+//         `,
+//         )
+//         .eq("id", payment_request_id)
+//         .maybeSingle();
 
-      if (!rejectedRequest) {
-        return NextResponse.json(
-          { error: "This request has already been processed." },
-          { status: 409 },
-        );
-      }
+//     if (requestError) throw requestError;
 
-      return NextResponse.json({
-        success: true,
-        payment_request: rejectedRequest,
-      });
-    }
+//     if (!paymentRequest) {
+//       return NextResponse.json(
+//         { error: "Payment request not found." },
+//         { status: 404 },
+//       );
+//     }
 
-    const durationDays = access_duration_days ?? 30;
-    const expiresAt = new Date();
+//     if (
+//       !["payment_claimed", "receipt_sent"].includes(
+//         paymentRequest.status,
+//       )
+//     ) {
+//       return NextResponse.json(
+//         {
+//           error:
+//             "Only payment_claimed or receipt_sent requests can be approved or rejected.",
+//         },
+//         { status: 409 },
+//       );
+//     }
 
-    expiresAt.setDate(expiresAt.getDate() + durationDays);
+//     if (action === "reject") {
+//       const { data: rejectedRequest, error: rejectError } =
+//         await supabase
+//           .from("course_payment_requests")
+//           .update({
+//             status: "rejected",
+//             rejected_at: new Date().toISOString(),
+//             admin_note: admin_note ?? null,
+//             updated_at: new Date().toISOString(),
+//           })
+//           .eq("id", payment_request_id)
+//           .in("status", ["payment_claimed", "receipt_sent"])
+//           .select("*")
+//           .maybeSingle();
 
-    const token =
-      crypto.randomUUID().replace(/-/g, "") +
-      crypto.randomUUID().replace(/-/g, "");
+//       if (rejectError) throw rejectError;
 
-    const { data: approvedRequest, error: approveError } =
-      await supabase
-        .from("course_payment_requests")
-        .update({
-          status: "approved",
-          approved_at: new Date().toISOString(),
-          expires_at: expiresAt.toISOString(),
-          admin_note: admin_note ?? null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", payment_request_id)
-        .in("status", ["payment_claimed", "receipt_sent"])
-        .select("*")
-        .maybeSingle();
+//       if (!rejectedRequest) {
+//         return NextResponse.json(
+//           { error: "This request has already been processed." },
+//           { status: 409 },
+//         );
+//       }
 
-    if (approveError) throw approveError;
+//       return NextResponse.json({
+//         success: true,
+//         payment_request: rejectedRequest,
+//       });
+//     }
 
-    if (!approvedRequest) {
-      return NextResponse.json(
-        { error: "This request has already been processed." },
-        { status: 409 },
-      );
-    }
+//     const durationDays = access_duration_days ?? 30;
+//     const expiresAt = new Date();
 
-    const { error: tokenError } = await supabase
-      .from("course_access_tokens")
-      .insert({
-        payment_request_id: paymentRequest.id,
-        user_id: paymentRequest.user_id,
-        course_id: paymentRequest.course_id,
-        token,
-        expires_at: expiresAt.toISOString(),
-        created_by: user.id,
-      });
+//     expiresAt.setDate(expiresAt.getDate() + durationDays);
 
-    if (tokenError) throw tokenError;
+//     const token =
+//       crypto.randomUUID().replace(/-/g, "") +
+//       crypto.randomUUID().replace(/-/g, "");
 
-    const { error: accessError } = await supabase
-      .from("course_access")
-      .upsert(
-        {
-          user_id: paymentRequest.user_id,
-          course_id: paymentRequest.course_id,
-          padlock: false,
-        },
-        {
-          onConflict: "user_id,course_id",
-        },
-      );
+//     const { data: approvedRequest, error: approveError } =
+//       await supabase
+//         .from("course_payment_requests")
+//         .update({
+//           status: "approved",
+//           approved_at: new Date().toISOString(),
+//           expires_at: expiresAt.toISOString(),
+//           admin_note: admin_note ?? null,
+//           updated_at: new Date().toISOString(),
+//         })
+//         .eq("id", payment_request_id)
+//         .in("status", ["payment_claimed", "receipt_sent"])
+//         .select("*")
+//         .maybeSingle();
+// console.log(approvedRequest)
+//     if (approveError) throw approveError;
 
-    if (accessError) throw accessError;
+//     if (!approvedRequest) {
+//       return NextResponse.json(
+//         { error: "This request has already been processed." },
+//         { status: 409 },
+//       );
+//     }
 
-    return NextResponse.json({
-      success: true,
-      payment_request: approvedRequest,
-      access_token: token,
-      expires_at: expiresAt.toISOString(),
-    });
+//     const { error: tokenError } = await supabase
+//       .from("course_access_tokens")
+//       .insert({
+//         payment_request_id: paymentRequest.id,
+//         user_id: paymentRequest.user_id,
+//         course_id: paymentRequest.course_id,
+//         token,
+//         expires_at: expiresAt.toISOString(),
+//         created_by: user.id,
+//       });
+
+//     if (tokenError) throw tokenError;
+
+//     const { error: accessError } = await supabase
+//       .from("course_access")
+//       .upsert(
+//         {
+//           user_id: paymentRequest.user_id,
+//           course_id: paymentRequest.course_id,
+//           padlock: false,
+//         },
+//         {
+//           onConflict: "user_id,course_id",
+//         },
+//       );
+
+//     if (accessError) throw accessError;
+
+
   } catch (error) {
     console.error("PATCH admin course payment failed:", error);
 
