@@ -55,6 +55,11 @@ const items = [
     label: "Courses",
     icon: BookOpen,
   },
+   {
+    href: "/admin/study-courses",
+    label: "Study Materials",
+    icon: CreditCard,
+  },
   {
     href: "/admin/cbt-payments",
     label: "CBT payments",

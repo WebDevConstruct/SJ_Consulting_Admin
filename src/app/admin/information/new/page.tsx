@@ -7,11 +7,11 @@ import {AnnouncementInput, AnnouncementRecord} from "@/types/announcement";
 import {saveAnnouncement} from "@/components/announcements/actions";
 import {announcementSchema} from "@lib/validation/announcement"
 export default function NewAnnouncementPage(){
-const [values, setValues] = React.useState<AnnouncementRecord>({} as AnnouncementRecord);
+const [values, setValues] = React.useState<AnnouncementInput>({} as AnnouncementInput);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState("")
 const router = useRouter()
-      function set<K extends keyof AnnouncementRecord>(key:K,value:AnnouncementRecord[K]) {
+      function set<K extends keyof AnnouncementInput>(key:K,value:AnnouncementInput[K]) {
                 setValues(current=>({...current,[key]:value}));
             }
             async function submit(values : AnnouncementRecord, event:FormEvent){
